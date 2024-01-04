@@ -4,15 +4,23 @@ public class MathGame {
 
     private Player player1;
     private Player player2;
+    private Player player3;
+
+
     private Player currentPlayer;
     private Player winner;
     private boolean gameOver;
+
+    private boolean overPlayer1 = false;
+    private boolean overPlayer2 = false;
+    private boolean overPlayer3 = false;
     private Scanner scanner;
 
     // create MathGame object
-    public MathGame(Player player1, Player player2, Scanner scanner) {
+    public MathGame(Player player1, Player player2, Player player3, Scanner scanner) {
         this.player1 = player1;
         this.player2 = player2;
+        this.player3 = player3;
         this.scanner = scanner;
         currentPlayer = null; // will get assigned at start of game
         winner = null; // will get assigned when a Player wins
@@ -51,6 +59,7 @@ public class MathGame {
         System.out.println("Current Scores:");
         System.out.println(player1.getName() + ": " + player1.getScore());
         System.out.println(player2.getName() + ": " + player2.getScore());
+        System.out.println(player3.getName() + ": " + player3.getScore());
         System.out.println("--------------------------------------");
     }
 
@@ -58,6 +67,7 @@ public class MathGame {
     public void resetGame() {
         player1.reset(); // this method resets the player
         player2.reset();
+        player3.reset();
         gameOver = false;
         currentPlayer = null;
         winner = null;
@@ -67,17 +77,21 @@ public class MathGame {
 
     // randomly chooses one of the Player objects to be the currentPlayer
     private void chooseStartingPlayer() {
-        int randNum = (int) (Math.random() * 2) + 1;
+        int randNum = (int) (Math.random() * 3) + 1;
         if (randNum == 1) {
             currentPlayer = player1;
-        } else {
+        }
+        if(randNum == 2){
             currentPlayer = player2;
+        }
+        else {
+            currentPlayer = player3;
         }
     }
 
     // asks a math question and returns true if the player answered correctly, false if not
     private boolean askQuestion() {
-        int operation = (int) (Math.random() * 4) + 1;
+        int operation = (int) (Math.random() * 5) + 1;
         int num1 = (int) (Math.random() * 100) + 1;
         int num2;
         int correctAnswer;
@@ -94,7 +108,11 @@ public class MathGame {
             num2 = (int) (Math.random() * 10) + 1;
             System.out.print(num1 + " * " + num2 + " = ");
             correctAnswer = num1 * num2;
-        } else {  // option == 4
+        } else if (operation == 4){
+            num2 = (int) (Math.random() * 10) + 1;
+            System.out.print(num1 + " ^ " + num2 + " = ");
+            correctAnswer = (int) Math.pow(num1,num2);
+        } else {  // option == 5
             num2 = (int) (Math.random() * 10) + 1;
             System.out.print(num1 + " / " + num2 + " = ");
             correctAnswer = num1 / num2;
@@ -114,7 +132,11 @@ public class MathGame {
     private void swapPlayers() {
         if (currentPlayer == player1) {
             currentPlayer = player2;
-        } else {
+        }
+        if (currentPlayer == player2){
+            currentPlayer = player3;
+        }
+        else{
             currentPlayer = player1;
         }
     }
@@ -123,8 +145,21 @@ public class MathGame {
     private void determineWinner() {
         if (currentPlayer == player1) {
             winner = player2;
-        } else {
+            player2.addWin();
+            player1.setWin(0);
+            player3.setWin(0);
+        }
+        if (currentPlayer == player2){
+            winner = player3;
+            player3.addWin();
+            player1.setWin(0);
+            player2.setWin(0);
+        }
+        else{
             winner = player1;
+            player1.addWin();
+            player2.setWin(0);
+            player3.setWin(0);
         }
     }
 }
